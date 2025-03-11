@@ -1,26 +1,22 @@
-import React from 'react'
-import Login from './Login'
-import Browse from './Browse'
-import { createBrowserRouter } from 'react-router-dom'
-import { RouterProvider } from "react-router-dom"
+import React from "react";
+import Login from "./Login";
+import Browse from "./Browse";
+import Recommendations from "./Recommendations";
+import { Routes, Route } from "react-router-dom";
+import SignOut from "./Signout"; // Import SignOut component
 
 const Body = () => {
-    const appRouter = createBrowserRouter([
-        {
-        path: '/',
-        element: <Login/>
-        },
-        {
-        path: '/browse',
-        element: <Browse/>
-        },
-    ])
-
   return (
-    <div>
-        <RouterProvider router={appRouter} />
+    <div className="relative min-h-screen">
+      <SignOut />
+      
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/browse" element={<Browse />} />
+        <Route path="/recommendations" element={<Recommendations />} />
+      </Routes>
     </div>
-  )
-}
+  );
+};
 
-export default Body
+export default Body;
