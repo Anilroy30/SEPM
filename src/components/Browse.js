@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { setTripPreferences } from "../utils/tripSlice";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import LocationAutocomplete from "./LocationAutocomplete";
 
 const Browse = () => {
     const dispatch = useDispatch();
@@ -94,50 +95,44 @@ const Browse = () => {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Location Selection */}
+                    
                     <div>
-                        <label className="block text-gray-600 font-medium mb-2">Select Location:</label>
-                        <div className="flex space-x-2">
-                            <button 
-                                type="button" 
-                                onClick={handleUseCurrentLocation}
-                                className={`px-4 py-2 rounded-lg text-white transition-all ${
-                                    useGPS ? "bg-green-500 hover:bg-green-600" : "bg-blue-500 hover:bg-blue-600"
-                                }`}
-                            >
-                                📍 Use My Current Location
-                            </button>
-                            <button 
-                                type="button" 
-                                onClick={handleManualLocation}
-                                className={`px-4 py-2 rounded-lg transition-all text-white ${
-                                    manualLocation ? "bg-purple-500 hover:bg-purple-600" : "bg-gray-500 hover:bg-gray-600"
-                                }`}
-                            >
-                                🔎 Enter Location Manually
-                            </button>
-                        </div>
+                      <label className="block text-gray-600 font-medium mb-2">Select Location:</label>
+                      
+                      <div className="flex space-x-2">
+                          <button 
+                              type="button" 
+                              onClick={handleUseCurrentLocation}
+                              className={`px-4 py-2 rounded-lg text-white transition-all ${
+                                  useGPS ? "bg-green-500 hover:bg-green-600" : "bg-blue-500 hover:bg-blue-600"
+                              }`}
+                          >
+                              📍 Use My Current Location
+                          </button>
+                          <button 
+                              type="button" 
+                              onClick={handleManualLocation}
+                              className={`px-4 py-2 rounded-lg transition-all text-white ${
+                                  manualLocation ? "bg-purple-500 hover:bg-purple-600" : "bg-gray-500 hover:bg-gray-600"
+                              }`}
+                          >
+                              🔎 Enter Location Manually
+                          </button>
+                      </div>
 
-                        {/* Input for Manual Location */}
-                        {manualLocation && (
-                            <input
-                                type="text"
-                                placeholder="Enter city or destination"
-                                value={manualLocationInput}
-                                onChange={(e) => setManualLocationInput(e.target.value)}
-                                className="w-full px-3 py-2 mt-2 border rounded-lg focus:ring focus:ring-blue-300 outline-none"
-                                required
-                            />
-                        )}
-
-                        {/* Show detected location if GPS is used */}
-                        {useGPS && (
-                            <input 
-                                type="text" 
-                                value={location} 
-                                readOnly 
-                                className="w-full px-3 py-2 mt-2 border rounded-lg bg-gray-200" 
-                            />
-                        )}
+                      {/* Smooth Toggle Effect */}
+                      <div className={`transition-all duration-300 ease-in-out mt-4 ${useGPS || manualLocation ? "opacity-100 h-auto" : "opacity-0 h-0 overflow-hidden"}`}>
+                          {useGPS ? (
+                              <input
+                                  type="text"
+                                  value={location}
+                                  readOnly
+                                  className="w-full px-3 py-2 border rounded-lg bg-gray-200 cursor-not-allowed shadow-md"
+                              />
+                          ) : (
+                              <LocationAutocomplete onSelect={(location) => setManualLocationInput(location)} />
+                          )}
+                      </div>
                     </div>
 
                     {/* Trip Duration with Separate Start & End Date Inputs */}
@@ -215,7 +210,7 @@ const Browse = () => {
                               </label>
                           ))}
                       </div>
-                  </div>
+                    </div>
 
                     {/* Additional Preferences Input */}
                     <div>
