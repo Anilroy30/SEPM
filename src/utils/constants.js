@@ -1,0 +1,1 @@
+export const USER_AVATAR = "https://static-00.iconduck.com/assets.00/profile-major-icon-1024x1024-9rtgyx30.png";
