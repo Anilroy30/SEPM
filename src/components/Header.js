@@ -1,5 +1,5 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,7 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
+  const [authChecked, setAuthChecked] = useState(false);  // ✅ Track when auth state is confirmed
 
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (user) => {
@@ -18,9 +19,10 @@ const Header = () => {
         dispatch(addUser({ uid, email, displayName, photoURL }));
         navigate("/browse");
       } else {
-        dispatch(removeUser());
+        dispatch(removeUser());  // ✅ Ensures state is cleared
         navigate("/");
       }
+      setAuthChecked(true); // ✅ Set auth check complete
     });
 
     return () => unSubscribe();
@@ -34,24 +36,20 @@ const Header = () => {
       });
   };
 
+  // ✅ Hide UI until Firebase auth state is checked
+  if (!authChecked) return null;
+
   return (
-      <header className="absolute top-10 left-10 flex items-center">
+    <header className="absolute top-10 left-10 flex items-center">
       <div className="relative flex items-center">
         <Logo />
       </div>
-  
 
-      {user && (
+      {user?.uid && ( // ✅ This ensures the Sign Out button disappears when logged out
         <div className="absolute top-2 right-4 flex flex-col items-center">
-          <img
-            className="w-12 h-12 border border-gray-400 cursor-pointer"
-            src={user?.photoURL}
-            alt="User Icon"
-          />
-
           <button
             onClick={handleSignOut}
-            className="mt-2 text-white text-sm font-semibold bg-gray-700 px-4 py-1 rounded-md hover:bg-gray-600 transition-all"
+            className="mt-2 text-white text-sm font-semibold bg-red-500 px-4 py-1 rounded-md hover:bg-red-600 transition-all"
           >
             Sign Out
           </button>

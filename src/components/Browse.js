@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { setTripPreferences } from "../utils/tripSlice";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import LocationAutocomplete from "./LocationAutocomplete";
+// import LocationAutocomplete from "./LocationAutocomplete";
 
 const Browse = () => {
     const dispatch = useDispatch();
@@ -122,7 +122,7 @@ const Browse = () => {
 
                       {/* Smooth Toggle Effect */}
                       <div className={`transition-all duration-300 ease-in-out mt-4 ${useGPS || manualLocation ? "opacity-100 h-auto" : "opacity-0 h-0 overflow-hidden"}`}>
-                          {useGPS ? (
+                          {/* {useGPS ? (
                               <input
                                   type="text"
                                   value={location}
@@ -131,7 +131,15 @@ const Browse = () => {
                               />
                           ) : (
                               <LocationAutocomplete onSelect={(location) => setManualLocationInput(location)} />
-                          )}
+                          )} */}
+
+
+                                <input
+                                  type="text"
+                                  value={location}
+                                  readOnly
+                                  className="w-full px-3 py-2 border rounded-lg bg-gray-200 cursor-not-allowed shadow-md"
+                              />
                       </div>
                     </div>
 
