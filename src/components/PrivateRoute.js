@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 const PrivateRoute = ({ children }) => {
   const user = useSelector((store) => store.user); // Get user from Redux store
 
-  console.log("🔍 Checking user authentication:", user); // Debugging
+  // console.log("🔍 Checking user authentication:", user); // Debugging
 
   return user ? children : <Navigate to="/" />; // Redirect to login if no user
 };
