@@ -29,7 +29,14 @@ const Browse = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const finalLocation = useGPS ? location : manualLocationInput;
+    let finalLocation = manualLocationInput;
+if (useGPS && location.includes("Lat:") && location.includes("Lng:")) {
+  const match = location.match(/Lat: ([0-9.-]+), Lng: ([0-9.-]+)/);
+  if (match) {
+    finalLocation = { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
+  }
+}
+
     const tripData = {
       location: finalLocation,
       startDate,

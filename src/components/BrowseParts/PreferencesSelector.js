@@ -10,11 +10,11 @@ const PreferencesSelector = ({ preferences, setPreferences }) => {
 
   const preferenceList = [
     "Adventure",
-    "Relaxation",
-    "Food",
+    "Events",
+    "Health",
     "Culture",
     "Nature",
-    "Nightlife",
+    "Shopping",
   ];
 
   return (
