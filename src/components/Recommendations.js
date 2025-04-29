@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getAIItinerary } from "../utils/geminiAPI";
-import GoogleMap from "./GoogleMap";
 import useUserLocation from "../utils/useUserLocation";
+import MapWithPOIs from "./MapWithPOIs";
 
 const Recommendations = () => {
-  const tripData = useSelector((state) => state.trip);
+  const { location, preferences, group, days, budget } = useSelector(
+    (state) => state.trip
+  );
   const [itinerary, setItinerary] = useState([]);
   const [loading, setLoading] = useState(true);
   const [aiError, setAIError] = useState(null);
@@ -14,7 +16,7 @@ const Recommendations = () => {
   useEffect(() => {
     const fetchItinerary = async () => {
       try {
-        const result = await getAIItinerary(tripData);
+        const result = await getAIItinerary({ location, preferences, group });
         setItinerary(result);
       } catch (err) {
         setAIError("Something went wrong generating itinerary.");
@@ -23,30 +25,44 @@ const Recommendations = () => {
       }
     };
     fetchItinerary();
-  }, [tripData]);
+  }, [location, preferences, group]);
+
+  const mapCenter = location?.lat && location?.lng
+    ? { lat: location.lat, lng: location.lng }
+    : { lat: 12.812423, lng: 80.0423041 }; // Default: Mahabalipuram
 
   return (
-    <div className="flex flex-col items-center p-4 min-h-screen bg-gradient-to-b from-gray-100 to-white dark:from-[#0f0f0f] dark:to-[#181818]">
-      <div className="w-full flex justify-center mb-8">
-        <div className="bg-white dark:bg-[#1e1e1e] text-gray-900 dark:text-white rounded-xl shadow-xl p-8 w-full max-w-2xl">
-          <h2 className="text-3xl font-bold text-center mb-6">✨ Your AI-Generated Itinerary</h2>
+    <div className="relative w-full h-screen overflow-hidden">
+      {/* Fullscreen Map in Background */}
+      <div className="absolute inset-0 z-0">
+        <MapWithPOIs center={mapCenter} preferences={preferences} />
+      </div>
+
+      {/* Itinerary Card on top */}
+      <div className="absolute top-1/2 left-1/2 z-10 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl px-4">
+        <div className="bg-white dark:bg-[#1e1e1e] text-gray-900 dark:text-white rounded-xl shadow-xl p-8 backdrop-blur-lg bg-opacity-80 dark:bg-opacity-70">
+          <h2 className="text-3xl font-bold text-center mb-6">
+            ✨ Your AI-Generated Itinerary
+          </h2>
 
           <div className="space-y-2 text-base md:text-lg">
-            <p><strong>📍 Location:</strong> {tripData.location}</p>
-            <p><strong>🗓 Trip Duration:</strong> {tripData.days} days</p>
-            <p><strong>💰 Budget Type:</strong> {tripData.budget}</p>
-            <p><strong>👥 Travel Group:</strong> {tripData.group}</p>
-            <p><strong>🏕 Preferences:</strong> {tripData.preferences.join(", ") || "None"}</p>
+            <p><strong>📍 Location:</strong> {location?.label || location || "Not specified"}</p>
+            <p><strong>🗓 Trip Duration:</strong> {days} days</p>
+            <p><strong>💰 Budget Type:</strong> {budget}</p>
+            <p><strong>👥 Travel Group:</strong> {group}</p>
+            <p><strong>🏕 Preferences:</strong> {preferences.join(", ") || "None"}</p>
           </div>
 
           <div className="mt-6">
             <h3 className="text-xl font-semibold mb-3">📝 Itinerary:</h3>
             {loading ? (
-              <p className="text-yellow-600 dark:text-yellow-400">Generating itinerary... ⏳</p>
+              <p className="text-yellow-600 dark:text-yellow-400">
+                Generating itinerary... ⏳
+              </p>
             ) : aiError ? (
               <p className="text-red-500">{aiError}</p>
             ) : (
-              <ul className="space-y-4">
+              <ul className="space-y-4 max-h-80 overflow-y-auto pr-2">
                 {itinerary.map((item, index) => (
                   <li
                     key={index}
@@ -61,10 +77,10 @@ const Recommendations = () => {
         </div>
       </div>
 
-      <GoogleMap tripData={tripData} itinerary={itinerary} userLocation={userLocation} />
-
       {locationError && (
-        <p className="text-sm text-red-400 mt-4">⚠️ {locationError}</p>
+        <div className="absolute bottom-4 left-4 z-20 text-sm text-red-400">
+          ⚠️ {locationError}
+        </div>
       )}
     </div>
   );

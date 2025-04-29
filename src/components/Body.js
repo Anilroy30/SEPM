@@ -5,37 +5,26 @@ import Recommendations from "./Recommendations";
 import { Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SignOut from "./Signout";
-import PrivateRoute from "./PrivateRoute"; // Import PrivateRoute
+import PrivateRoute from "./PrivateRoute";
+import VoiceTranslatorGPT from "./VoiceTranslatorGPT";
 
 const Body = () => {
-  const user = useSelector((store) => store.user); // Get user from Redux store
+  const user = useSelector((store) => store.user);
 
   return (
-    <div className="relative min-h-screen">
-      {user && <SignOut />} {/* Show SignOut only if logged in */}
-
-      <Routes>
-        <Route path="/" element={<Login />} />
-        {/* Protect routes using PrivateRoute */}
-        <Route
-          path="/browse"
-          element={
-            <PrivateRoute>
-              <Browse />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/recommendations"
-          element={
-            <PrivateRoute>
-              <Recommendations />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
+    <div className="pt-20">
+      <div className="w-full max-w-[1200px] mx-auto px-4 overflow-x-hidden">
+        {user && <SignOut />}
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/browse" element={<PrivateRoute><Browse /></PrivateRoute>} />
+          <Route path="/recommendations" element={<PrivateRoute><Recommendations /></PrivateRoute>} />
+          <Route path="/voice" element={<PrivateRoute><VoiceTranslatorGPT /></PrivateRoute>} />
+        </Routes>
+      </div>
     </div>
   );
 };
+
 
 export default Body;

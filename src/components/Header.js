@@ -10,7 +10,7 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
-  const [authChecked, setAuthChecked] = useState(false);  // ✅ Track when auth state is confirmed
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (user) => {
@@ -19,43 +19,25 @@ const Header = () => {
         dispatch(addUser({ uid, email, displayName, photoURL }));
         navigate("/browse");
       } else {
-        dispatch(removeUser());  // ✅ Ensures state is cleared
+        dispatch(removeUser());
         navigate("/");
       }
-      setAuthChecked(true); // ✅ Set auth check complete
+      setAuthChecked(true);
     });
 
     return () => unSubscribe();
   }, [dispatch, navigate]);
 
   const handleSignOut = () => {
-    signOut(auth)
-      .then(() => {})
-      .catch(() => {
-        navigate("/error");
-      });
+    signOut(auth).catch(() => navigate("/error"));
   };
 
-  // ✅ Hide UI until Firebase auth state is checked
   if (!authChecked) return null;
 
   return (
-    <header className="absolute top-10 left-10 flex items-center">
-      <div className="relative flex items-center">
-        <Logo />
-      </div>
-
-      {user?.uid && ( // ✅ This ensures the Sign Out button disappears when logged out
-        <div className="absolute top-2 right-4 flex flex-col items-center">
-          <button
-            onClick={handleSignOut}
-            className="mt-2 text-white text-sm font-semibold bg-red-500 px-4 py-1 rounded-md hover:bg-red-600 transition-all"
-          >
-            Sign Out
-          </button>
-        </div>
-      )}
-    </header>
+    <div className="fixed top-4 left-6 z-50 scale-[0.85]">
+      <Logo />
+    </div>
   );
 };
 

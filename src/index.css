@@ -2,21 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
-.text-sm.text-gray-600 {
-    color: rgb(100, 116, 139); /* A slightly darker gray */
+/* 🧼 Removed overly specific override that blocked text color changes */
+/* .text-sm.text-gray-600 {
+  color: rgb(100 116 139);
+} */
+
+/* Custom slow spin animation */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+/* 🌌 Global layout background & styling */
+html,
+body {
+  @apply min-h-screen overflow-x-hidden bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] text-white;
+  margin: 0;
+  padding: 0;
+  max-width: 100vw;
+  box-sizing: border-box;
+  scrollbar-width: none;
+}
+
+body::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
 }
 
 
-@keyframes spin-slow {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  
-  .animate-spin-slow {
-    animation: spin-slow 8s linear infinite;
-  }
-  
+.perspective {
+  perspective: 1000px;
+}
+
+.transform-style-preserve-3d {
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.rotate-y-0 {
+  transform: rotateY(0deg);
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
